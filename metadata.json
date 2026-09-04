@@ -1,0 +1,6 @@
+{
+  "name": "NexusDB AI",
+  "description": "Intelligent Universal Data Management Platform – build custom databases, manage records, visualize analytics, and query with Gemini AI.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

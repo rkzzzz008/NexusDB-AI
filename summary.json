@@ -1,0 +1,241 @@
+{
+  "verdict": "PASS (PRODUCTION-READY)",
+  "executionDate": "2026-09-04T13:22:02.842Z",
+  "targetUrl": "http://localhost:3000",
+  "totalDurationSec": 225.6,
+  "totalDurationMin": 3.76,
+  "passedChecks": 28,
+  "failedChecks": 0,
+  "metrics": {
+    "totalRequests": 697,
+    "totalAIRequests": 8,
+    "totalCRUDOperations": 315,
+    "peakNodeRssMB": 78.31,
+    "peakBrowserHeapMB": 35.84,
+    "averageResponseTimeMs": 499.6,
+    "slowestEndpoint": "POST /api/ai/query (57747ms)",
+    "unexpectedPageReloads": 0,
+    "loginRedirects": 0,
+    "reactRuntimeErrors": 0,
+    "unhandledPromiseRejections": 0,
+    "viteFullReloads": 0,
+    "websocketReloadEvents": 0,
+    "jwtAuthLosses": 0,
+    "unauthorized401Errors": 0,
+    "frozenUIEvents": 0,
+    "duplicateAPICalls": 113
+  },
+  "phases": [
+    {
+      "status": "PASS",
+      "step": "Phase 1 - User Registered -- JWT active in localStorage",
+      "detail": "eyJhbGciOiJIUzI1NiIsInR5cCI6Ik..."
+    },
+    {
+      "status": "PASS",
+      "step": "Phase 1 - User Registration & Auto Login",
+      "detail": "User stress-1788527910848@nexus.local"
+    },
+    {
+      "status": "PASS",
+      "step": "Phase 1 - /api/auth/me Verification",
+      "detail": "Authenticated as stress-1788527910848@nexus.local"
+    },
+    {
+      "status": "PASS",
+      "step": "Phase 1 - Hard Refresh -- JWT active in localStorage",
+      "detail": "eyJhbGciOiJIUzI1NiIsInR5cCI6Ik..."
+    },
+    {
+      "status": "PASS",
+      "step": "Phase 1 - F5 Hard Refresh Session Restored",
+      "detail": "JWT intact, Dashboard rendered"
+    },
+    {
+      "status": "PASS",
+      "step": "Phase 1 - Re-login after Reopen -- JWT active in localStorage",
+      "detail": "eyJhbGciOiJIUzI1NiIsInR5cCI6Ik..."
+    },
+    {
+      "status": "PASS",
+      "step": "Phase 1 - Browser Reopen & Re-authentication Complete",
+      "detail": "Session persistent"
+    },
+    {
+      "status": "PASS",
+      "step": "Phase 1 - User Logout Verification",
+      "detail": "Token removed from localStorage, returned to landing state"
+    },
+    {
+      "status": "PASS",
+      "step": "Phase 1 - Invalid Token Graceful Handling",
+      "detail": "Rejected with 401/403 without crash"
+    },
+    {
+      "status": "PASS",
+      "step": "Phase 1 - Expired Token Graceful Handling",
+      "detail": "Rejected with 401/403 without crash"
+    },
+    {
+      "status": "PASS",
+      "step": "Phase 1 - Re-authenticated Valid Session -- JWT active in localStorage",
+      "detail": "eyJhbGciOiJIUzI1NiIsInR5cCI6Ik..."
+    },
+    {
+      "status": "PASS",
+      "step": "Phase 1 - Complete Authentication Cycle Passed",
+      "detail": "Register, Login, F5, Reopen, Logout, Invalid/Expired tokens, and Re-login validated"
+    },
+    {
+      "status": "PASS",
+      "step": "Phase 2 - Database Stress Completed",
+      "detail": "105 operations executed with 0 failures"
+    },
+    {
+      "status": "PASS",
+      "step": "Phase 3 - Record Archive & Restore Verified",
+      "detail": "Records successfully archived and restored"
+    },
+    {
+      "status": "PASS",
+      "step": "Phase 3 - Record Stress Completed",
+      "detail": "150+ created, 30 edited, 10 duplicated, search/sort/paginated, archived/restored, 20 deleted"
+    },
+    {
+      "status": "PASS",
+      "step": "Phase 4 - AI Stress Completed",
+      "detail": "Chat, Insights, Cleaning, Report, Creator, Large Prompt & Parallel Queries Passed"
+    },
+    {
+      "status": "PASS",
+      "step": "Phase 5 - Navigation Stress Completed",
+      "detail": "500 rapid view transitions with 0 unexpected reloads"
+    },
+    {
+      "status": "PASS",
+      "step": "Phase 6 - Soft Refresh -- JWT active in localStorage",
+      "detail": "eyJhbGciOiJIUzI1NiIsInR5cCI6Ik..."
+    },
+    {
+      "status": "PASS",
+      "step": "Phase 6 - Soft Refresh Restored Session",
+      "detail": ""
+    },
+    {
+      "status": "PASS",
+      "step": "Phase 6 - Hard Refresh F5 -- JWT active in localStorage",
+      "detail": "eyJhbGciOiJIUzI1NiIsInR5cCI6Ik..."
+    },
+    {
+      "status": "PASS",
+      "step": "Phase 6 - Hard Refresh (F5) Restored Session",
+      "detail": "Zero login redirect, Dashboard rendered"
+    },
+    {
+      "status": "PASS",
+      "step": "Phase 6 - Ctrl+R -- JWT active in localStorage",
+      "detail": "eyJhbGciOiJIUzI1NiIsInR5cCI6Ik..."
+    },
+    {
+      "status": "PASS",
+      "step": "Phase 6 - Ctrl+R Restored Session",
+      "detail": "Session intact"
+    },
+    {
+      "status": "PASS",
+      "step": "Zero Unexpected Page Reloads",
+      "detail": "Verified 0 page reloads"
+    },
+    {
+      "status": "PASS",
+      "step": "Zero Vite Full-Reload Events",
+      "detail": "Verified 0 Vite reloads"
+    },
+    {
+      "status": "PASS",
+      "step": "Zero 401 Unauthorized Responses",
+      "detail": "Verified 0 auth failures"
+    },
+    {
+      "status": "PASS",
+      "step": "Zero React Runtime Errors",
+      "detail": "No React crash or unhandled error"
+    },
+    {
+      "status": "PASS",
+      "step": "Minimal Duplicate API Calls",
+      "detail": "Detected: 113"
+    }
+  ],
+  "screenshots": [
+    "001_01_landing_page.png",
+    "001_01_phase1_landing.png",
+    "002_02_phase1_after_register.png",
+    "002_02_register_form_filled.png",
+    "003_03_after_register.png",
+    "003_03_phase1_after_f5.png",
+    "004_04_after_login.png",
+    "004_04_phase1_reopen_login.png",
+    "005_05_dashboard_overview.png",
+    "005_05_phase1_after_logout.png",
+    "005_05_phase2_db_stress.png",
+    "006_06_create_db_modal.png",
+    "006_06_phase1_reauthenticated.png",
+    "006_06_phase3_records.png",
+    "007_05_phase2_db_stress.png",
+    "007_07_db_created.png",
+    "007_07_phase4_ai.png",
+    "008_07_phase3_records.png",
+    "008_08_database_view.png",
+    "008_08_phase5_nav500.png",
+    "009_08_phase4_ai.png",
+    "009_09_phase6_hard_f5.png",
+    "009_09_records_in_table.png",
+    "010_08_phase5_nav500.png",
+    "010_10_phase6_ctrl_r.png",
+    "010_10_record_edited.png",
+    "011_09_phase6_hard_f5.png",
+    "011_11_phase7_final_state.png",
+    "011_11_record_deleted.png",
+    "012_10_phase6_ctrl_r.png",
+    "012_12_ai_chat_modal_open.png",
+    "012_14_ai_insights.png",
+    "013_11_phase7_final_state.png",
+    "013_13_ai_chat_response.png",
+    "013_14_ai_insights.png",
+    "013_20_rapid_nav_completed.png",
+    "014_14_ai_insights.png",
+    "014_15_ai_cleaning_modal.png",
+    "014_21_after_logout.png",
+    "015_15_ai_cleaning_modal.png",
+    "015_16_ai_report_modal.png",
+    "015_17_ai_db_creator_modal.png",
+    "015_22_re_login.png",
+    "016_16_ai_report_modal.png",
+    "016_17_ai_db_creator_modal.png",
+    "016_18_after_ai_db_creator.png",
+    "016_23_after_f5.png",
+    "017_17_ai_db_creator_modal.png",
+    "017_18_after_ai_db_creator.png",
+    "017_19_admin_panel.png",
+    "017_24_final_state.png",
+    "018_18_after_ai_db_creator.png",
+    "018_19_admin_panel.png",
+    "018_20_rapid_nav_completed.png",
+    "019_19_admin_panel.png",
+    "019_20_rapid_nav_completed.png",
+    "019_21_after_logout.png",
+    "020_20_rapid_nav_completed.png",
+    "020_21_after_logout.png",
+    "020_22_re_login.png",
+    "021_21_after_logout.png",
+    "021_22_re_login.png",
+    "021_23_after_f5.png",
+    "022_22_re_login.png",
+    "022_23_after_f5.png",
+    "022_24_final_state.png",
+    "023_23_after_f5.png",
+    "023_24_final_state.png",
+    "024_24_final_state.png"
+  ]
+}

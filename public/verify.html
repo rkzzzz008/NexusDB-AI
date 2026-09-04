@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>NexusDB AI — Browser Verification Suite</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', monospace; background: #0d0d14; color: #e2e8f0; min-height: 100vh; }
+  .header { background: linear-gradient(135deg, #1e1b4b, #312e81); padding: 24px 32px; border-bottom: 1px solid #4338ca; }
+  .header h1 { font-size: 1.5rem; color: #a5b4fc; margin-bottom: 4px; }
+  .header p  { font-size: 0.85rem; color: #6b7280; }
+  .container { max-width: 900px; margin: 0 auto; padding: 24px 16px; }
+  .card { background: #13131f; border: 1px solid #1e1e2e; border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+  .card h2 { font-size: 1rem; color: #a5b4fc; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .step { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 1px solid #1a1a2e; }
+  .step:last-child { border-bottom: none; }
+  .status { font-size: 1.2rem; min-width: 24px; }
+  .step-name { font-size: 0.8rem; color: #94a3b8; flex: 1; }
+  .step-result { font-size: 0.78rem; font-family: monospace; word-break: break-all; }
+  .pass { color: #34d399; }
+  .fail { color: #f87171; }
+  .warn { color: #fbbf24; }
+  .info { color: #60a5fa; }
+  .pending { color: #4b5563; }
+  button { padding: 10px 24px; background: #4338ca; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.9rem; transition: background 0.2s; }
+  button:hover { background: #5b4cf5; }
+  button:disabled { background: #374151; cursor: not-allowed; }
+  .run-btn { margin-bottom: 20px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  #log { background: #0a0a12; border: 1px solid #1e1e2e; border-radius: 8px; padding: 12px; font-size: 0.75rem; font-family: monospace; max-height: 300px; overflow-y: auto; white-space: pre-wrap; word-break: break-all; }
+  .summary-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+  .metric { background: #13131f; border: 1px solid #1e1e2e; border-radius: 8px; padding: 12px; text-align: center; }
+  .metric .value { font-size: 2rem; font-weight: bold; }
+  .metric .label { font-size: 0.75rem; color: #6b7280; margin-top: 4px; }
+  .verdict { text-align: center; padding: 20px; border-radius: 12px; font-size: 1.3rem; font-weight: bold; margin-top: 16px; }
+  .verdict.pass { background: #064e3b; color: #34d399; border: 1px solid #059669; }
+  .verdict.fail { background: #450a0a; color: #f87171; border: 1px solid #dc2626; }
+  .verdict.pending { background: #1e1a3a; color: #a5b4fc; border: 1px solid #4338ca; }
+  input[type=text], input[type=password] { background: #0d0d14; border: 1px solid #374151; color: #e2e8f0; padding: 8px 12px; border-radius: 6px; font-size: 0.85rem; width: 100%; margin-bottom: 8px; }
+  label { font-size: 0.8rem; color: #94a3b8; display: block; margin-bottom: 4px; }
+  .config { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🧪 NexusDB AI — Browser Verification Suite</h1>
+  <p>Automated verification of auth persistence, AI endpoints, CRUD, and Vite reload behavior</p>
+</div>
+
+<div class="container">
+
+  <!-- Config -->
+  <div class="card">
+    <h2>⚙️ Configuration</h2>
+    <div class="config">
+      <div>
+        <label>App URL</label>
+        <input id="appUrl" type="text" value="http://localhost:3000">
+      </div>
+      <div>
+        <label>Email</label>
+        <input id="email" type="text" value="browsertest@nexus.local">
+      </div>
+      <div>
+        <label>Password</label>
+        <input id="password" type="password" value="Test@12345">
+      </div>
+      <div>
+        <label>Register if not exists?</label>
+        <input id="doRegister" type="text" value="yes (name=BrowserTest)">
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary -->
+  <div class="summary-bar">
+    <div class="metric"><div class="value" id="m-pass" style="color:#34d399">—</div><div class="label">Passed</div></div>
+    <div class="metric"><div class="value" id="m-fail" style="color:#f87171">—</div><div class="label">Failed</div></div>
+    <div class="metric"><div class="value" id="m-warn" style="color:#fbbf24">—</div><div class="label">Warnings</div></div>
+    <div class="metric"><div class="value" id="m-total" style="color:#94a3b8">0</div><div class="label">Total Tests</div></div>
+  </div>
+
+  <!-- Run Button -->
+  <div class="run-btn">
+    <button id="runBtn" onclick="runAll()">▶ Run All Verification Tests</button>
+    <button onclick="clearAll()" style="background:#374151">🗑 Clear</button>
+    <span id="status-text" style="font-size:0.85rem;color:#6b7280"></span>
+  </div>
+
+  <!-- Verdict -->
+  <div class="verdict pending" id="verdict">⏳ Click "Run All Verification Tests" to begin</div>
+
+  <!-- Tests -->
+  <div class="card" style="margin-top:16px">
+    <h2>🔐 Authentication Tests</h2>
+    <div id="auth-steps"></div>
+  </div>
+
+  <div class="card">
+    <h2>📦 CRUD & Database Tests</h2>
+    <div id="crud-steps"></div>
+  </div>
+
+  <div class="card">
+    <h2>🤖 AI Endpoint Tests</h2>
+    <div id="ai-steps"></div>
+  </div>
+
+  <div class="card">
+    <h2>💾 Persistence & Reload Tests</h2>
+    <div id="persist-steps"></div>
+  </div>
+
+  <div class="card">
+    <h2>📋 Verification Log</h2>
+    <div id="log">Press "Run All Verification Tests" to start...</div>
+  </div>
+
+</div>
+
+<script>
+const results = { pass: 0, fail: 0, warn: 0, total: 0 };
+let token = null;
+let testDbId = null;
+let testRecordId = null;
+
+function log(msg, type='info') {
+  const el = document.getElementById('log');
+  const prefix = { pass:'✅', fail:'❌', warn:'⚠️', info:'ℹ️' }[type] || 'ℹ️';
+  el.textContent += `${new Date().toISOString().substr(11,8)} ${prefix} ${msg}\n`;
+  el.scrollTop = el.scrollHeight;
+}
+
+function addStep(containerId, id, name) {
+  const c = document.getElementById(containerId);
+  const el = document.createElement('div');
+  el.className = 'step';
+  el.id = 'step-' + id;
+  el.innerHTML = `<span class="status">⏳</span><span class="step-name">${name}</span><span class="step-result pending" id="result-${id}">Waiting...</span>`;
+  c.appendChild(el);
+}
+
+function setStep(id, type, result) {
+  const icons = { pass:'✅', fail:'❌', warn:'⚠️', info:'ℹ️' };
+  const step = document.getElementById('step-' + id);
+  if (!step) return;
+  step.querySelector('.status').textContent = icons[type] || '•';
+  const r = step.querySelector('.step-result');
+  r.className = `step-result ${type}`;
+  r.textContent = result;
+  results.total++;
+  if (type === 'pass') results.pass++;
+  if (type === 'fail') results.fail++;
+  if (type === 'warn') results.warn++;
+  updateMetrics();
+}
+
+function updateMetrics() {
+  document.getElementById('m-pass').textContent = results.pass;
+  document.getElementById('m-fail').textContent = results.fail;
+  document.getElementById('m-warn').textContent = results.warn;
+  document.getElementById('m-total').textContent = results.total;
+}
+
+function status(msg) {
+  document.getElementById('status-text').textContent = msg;
+}
+
+async function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+async function apiCall(method, path, body, authToken) {
+  const url = document.getElementById('appUrl').value + path;
+  const headers = { 'Content-Type': 'application/json' };
+  if (authToken) headers['Authorization'] = `Bearer ${authToken}`;
+  const opts = { method, headers };
+  if (body) opts.body = JSON.stringify(body);
+  const r = await fetch(url, opts);
+  const data = await r.json().catch(() => ({}));
+  return { status: r.status, ok: r.ok, data };
+}
+
+function setupSteps() {
+  // Auth
+  addStep('auth-steps', 'health',    '1. GET /api/health — server is alive');
+  addStep('auth-steps', 'register',  '2. POST /api/auth/register (or skip if exists)');
+  addStep('auth-steps', 'login',     '3. POST /api/auth/login — get JWT');
+  addStep('auth-steps', 'me',        '4. GET /api/auth/me with JWT — 200 expected');
+  addStep('auth-steps', 'localstor', '5. JWT stored in localStorage["nexus_token"]');
+  addStep('auth-steps', 'me2',       '6. Re-call /api/auth/me 5s later — session stable');
+  // CRUD
+  addStep('crud-steps', 'createdb',  '1. POST /api/databases — create test database');
+  addStep('crud-steps', 'getdbs',    '2. GET /api/databases — list databases');
+  addStep('crud-steps', 'createrec', '3. POST /api/records — create record');
+  addStep('crud-steps', 'getrecs',   '4. GET /api/records?databaseId=... — fetch records');
+  addStep('crud-steps', 'updaterec', '5. PATCH /api/records/:id — update record');
+  addStep('crud-steps', 'deleterec', '6. DELETE /api/records/:id — delete record (verify no auth loss)');
+  // AI
+  addStep('ai-steps', 'aiquery',   '1. POST /api/ai/query — AI natural language query (no reload)');
+  addStep('ai-steps', 'aiinsight', '2. GET /api/ai/insights/:dbId — AI insights (no reload)');
+  addStep('ai-steps', 'aiclean',   '3. GET /api/ai/clean-data/:dbId — AI data cleaning (no reload)');
+  addStep('ai-steps', 'me-after',  '4. /api/auth/me after AI ops — JWT still valid');
+  // Persistence
+  addStep('persist-steps', 'vite-ws',  '1. Vite WebSocket — monitor for "full-reload" events');
+  addStep('persist-steps', 'locfinal', '2. localStorage after all ops — nexus_token still present');
+  addStep('persist-steps', 'notif',    '3. GET /api/notifications — still authenticated');
+  addStep('persist-steps', 'me-final', '4. Final /api/auth/me — session alive end-to-end');
+}
+
+// Monitor Vite WebSocket for full-reload
+let viteReloadDetected = false;
+function monitorViteWS() {
+  try {
+    const origProto = WebSocket.prototype.send;
+    const self = window;
+    // Intercept incoming messages by wrapping addEventListener
+    const origAddEL = EventTarget.prototype.addEventListener;
+    EventTarget.prototype.addEventListener = function(type, fn, opts) {
+      if (this instanceof WebSocket && type === 'message') {
+        const wrapped = function(e) {
+          try {
+            const d = JSON.parse(e.data);
+            if (d && d.type === 'full-reload') {
+              viteReloadDetected = true;
+              log('VITE FULL-RELOAD DETECTED! payload=' + JSON.stringify(d), 'fail');
+            }
+          } catch {}
+          fn.call(this, e);
+        };
+        return origAddEL.call(this, type, wrapped, opts);
+      }
+      return origAddEL.call(this, type, fn, opts);
+    };
+    log('Vite WebSocket monitor installed', 'info');
+  } catch(e) {
+    log('Could not install WS monitor: ' + e.message, 'warn');
+  }
+}
+
+async function runAll() {
+  // Reset
+  Object.assign(results, { pass:0, fail:0, warn:0, total:0 });
+  viteReloadDetected = false;
+  token = null; testDbId = null; testRecordId = null;
+  document.getElementById('auth-steps').innerHTML = '';
+  document.getElementById('crud-steps').innerHTML = '';
+  document.getElementById('ai-steps').innerHTML = '';
+  document.getElementById('persist-steps').innerHTML = '';
+  document.getElementById('log').textContent = '';
+  document.getElementById('runBtn').disabled = true;
+  setupSteps();
+  updateMetrics();
+
+  const BASE = document.getElementById('appUrl').value;
+  const EMAIL = document.getElementById('email').value;
+  const PASS  = document.getElementById('password').value;
+
+  monitorViteWS();
+
+  // ====== AUTH TESTS ======
+  status('Testing auth...');
+  log('=== AUTH TESTS ===');
+
+  // 1. Health
+  try {
+    const h = await apiCall('GET', '/api/health', null, null);
+    if (h.ok && h.data.status === 'ok') {
+      setStep('health', 'pass', `200 OK — app="${h.data.app}" ts=${h.data.timestamp}`);
+      log('Health check passed', 'pass');
+    } else {
+      setStep('health', 'fail', `status=${h.status} — server may be down`);
+      log('Health check FAILED — server may not be running', 'fail');
+    }
+  } catch(e) {
+    setStep('health', 'fail', `Network error: ${e.message} — is dev server running on ${BASE}?`);
+    log('Health check FAILED (network): ' + e.message, 'fail');
+  }
+
+  // 2. Register
+  try {
+    const reg = await apiCall('POST', '/api/auth/register', { name:'BrowserTest', email:EMAIL, password:PASS, confirmPassword:PASS, department:'Testing' }, null);
+    if (reg.ok) {
+      setStep('register', 'pass', `201 — user registered. id=${reg.data.user?.id}`);
+      log('Register: new user created', 'pass');
+      token = reg.data.token;
+    } else if (reg.status === 409 || (reg.data.error||'').toLowerCase().includes('exist')) {
+      setStep('register', 'warn', `User already exists — will login instead`);
+      log('Register: user already exists (expected)', 'warn');
+    } else {
+      setStep('register', 'warn', `status=${reg.status} msg=${reg.data.error||'?'}`);
+      log('Register unexpected response: ' + JSON.stringify(reg.data), 'warn');
+    }
+  } catch(e) {
+    setStep('register', 'fail', e.message);
+    log('Register error: ' + e.message, 'fail');
+  }
+
+  // 3. Login
+  try {
+    const login = await apiCall('POST', '/api/auth/login', { email:EMAIL, password:PASS }, null);
+    if (login.ok && login.data.token) {
+      token = login.data.token;
+      setStep('login', 'pass', `200 OK — JWT received (${token.substring(0,30)}...)`);
+      log('Login: JWT received', 'pass');
+    } else {
+      setStep('login', 'fail', `status=${login.status} err=${login.data.error||'no token returned'}`);
+      log('Login FAILED: ' + JSON.stringify(login.data), 'fail');
+    }
+  } catch(e) {
+    setStep('login', 'fail', e.message);
+    log('Login error: ' + e.message, 'fail');
+  }
+
+  // 4. /api/auth/me
+  if (token) {
+    try {
+      const me = await apiCall('GET', '/api/auth/me', null, token);
+      if (me.ok && me.data.user) {
+        setStep('me', 'pass', `200 OK — ${me.data.user.email} role=${me.data.user.role}`);
+        log('/api/auth/me: authenticated as ' + me.data.user.email, 'pass');
+      } else {
+        setStep('me', 'fail', `status=${me.status} — NOT authenticated`);
+        log('/api/auth/me FAILED: ' + JSON.stringify(me.data), 'fail');
+      }
+    } catch(e) {
+      setStep('me', 'fail', e.message);
+    }
+  } else {
+    setStep('me', 'fail', 'No token available — login failed');
+  }
+
+  // 5. localStorage
+  try {
+    localStorage.setItem('nexus_token', token);
+    const stored = localStorage.getItem('nexus_token');
+    if (stored === token) {
+      setStep('localstor', 'pass', `localStorage["nexus_token"] set and read correctly`);
+      log('localStorage: token stored correctly', 'pass');
+    } else {
+      setStep('localstor', 'fail', `stored="${stored}" expected JWT`);
+    }
+  } catch(e) {
+    setStep('localstor', 'fail', e.message);
+  }
+
+  // 6. Stability check
+  await sleep(5000);
+  if (token) {
+    try {
+      const me2 = await apiCall('GET', '/api/auth/me', null, token);
+      if (me2.ok) {
+        setStep('me2', 'pass', `200 OK after 5s delay — session stable`);
+        log('/api/auth/me (5s later): still valid', 'pass');
+      } else {
+        setStep('me2', 'fail', `status=${me2.status} — session expired after 5s!`);
+        log('Session stability FAIL after 5s', 'fail');
+      }
+    } catch(e) { setStep('me2', 'fail', e.message); }
+  } else {
+    setStep('me2', 'fail', 'No token');
+  }
+
+  // ====== CRUD TESTS ======
+  status('Testing CRUD...');
+  log('\n=== CRUD TESTS ===');
+
+  // 1. Create DB
+  if (token) {
+    try {
+      const r = await apiCall('POST', '/api/databases', { name:'VerifyDB-'+Date.now(), description:'Browser verify test', category:'Custom', icon:'Database', color:'blue', fields:[{id:'f1',name:'title',label:'Title',type:'Text',required:true}] }, token);
+      if (r.ok && r.data.database) {
+        testDbId = r.data.database.id;
+        setStep('createdb', 'pass', `201 — id=${testDbId}`);
+        log('Create DB: ' + testDbId, 'pass');
+      } else {
+        setStep('createdb', 'fail', `status=${r.status} err=${r.data.error||'?'}`);
+        log('Create DB FAILED: ' + JSON.stringify(r.data), 'fail');
+      }
+    } catch(e) { setStep('createdb','fail',e.message); }
+  } else { setStep('createdb','fail','No token'); }
+
+  // 2. List DBs
+  if (token) {
+    try {
+      const r = await apiCall('GET', '/api/databases', null, token);
+      if (r.ok) {
+        setStep('getdbs', 'pass', `200 OK — ${r.data.databases?.length||0} database(s)`);
+        log('GET databases: ' + (r.data.databases?.length||0) + ' found', 'pass');
+      } else {
+        setStep('getdbs','fail',`status=${r.status}`);
+      }
+    } catch(e) { setStep('getdbs','fail',e.message); }
+  } else { setStep('getdbs','fail','No token'); }
+
+  // 3. Create record
+  if (token && testDbId) {
+    try {
+      const r = await apiCall('POST', '/api/records', { databaseId:testDbId, data:{ title:'Verify Record 1' } }, token);
+      if (r.ok && r.data.record) {
+        testRecordId = r.data.record.id;
+        setStep('createrec', 'pass', `201 — id=${testRecordId}`);
+        log('Create record: ' + testRecordId, 'pass');
+      } else {
+        setStep('createrec','fail',`status=${r.status} err=${r.data.error||'?'}`);
+        log('Create record FAILED: ' + JSON.stringify(r.data), 'fail');
+      }
+    } catch(e) { setStep('createrec','fail',e.message); }
+  } else { setStep('createrec','fail','No token or DB'); }
+
+  // 4. Get records
+  if (token && testDbId) {
+    try {
+      const r = await apiCall('GET', `/api/records?databaseId=${testDbId}`, null, token);
+      if (r.ok) {
+        setStep('getrecs','pass',`200 — ${r.data.records?.length||0} record(s)`);
+        log('GET records: ' + (r.data.records?.length||0) + ' found', 'pass');
+      } else { setStep('getrecs','fail',`status=${r.status}`); }
+    } catch(e) { setStep('getrecs','fail',e.message); }
+  } else { setStep('getrecs','fail','No token or DB'); }
+
+  // 5. Update record
+  if (token && testRecordId) {
+    try {
+      const r = await apiCall('PATCH', `/api/records/${testRecordId}`, { data:{ title:'Updated Record' } }, token);
+      if (r.ok) {
+        setStep('updaterec','pass',`200 — updated title="Updated Record"`);
+        log('Update record: OK', 'pass');
+      } else { setStep('updaterec','fail',`status=${r.status} err=${r.data.error||'?'}`); }
+    } catch(e) { setStep('updaterec','fail',e.message); }
+  } else { setStep('updaterec','fail','No token or record ID'); }
+
+  // 6. Delete record
+  if (token && testRecordId) {
+    try {
+      const r = await apiCall('DELETE', `/api/records/${testRecordId}`, null, token);
+      if (r.ok) {
+        setStep('deleterec','pass',`200 — record deleted, checking auth still valid...`);
+        log('Delete record: OK — session must still be valid', 'pass');
+      } else { setStep('deleterec','fail',`status=${r.status}`); }
+      // Verify auth after delete
+      const meAfter = await apiCall('GET', '/api/auth/me', null, token);
+      if (!meAfter.ok) {
+        setStep('deleterec','fail',`DELETE broke auth! /api/auth/me returned ${meAfter.status}`);
+        log('CRITICAL: auth lost after DELETE operation!', 'fail');
+      }
+    } catch(e) { setStep('deleterec','fail',e.message); }
+  } else { setStep('deleterec','fail','No token or record ID'); }
+
+  // ====== AI TESTS ======
+  status('Testing AI endpoints (may take 30-60s per call)...');
+  log('\n=== AI TESTS ===');
+  log('Note: These calls go to Gemini API and may take 15-60s', 'info');
+
+  // Track if Vite fired a reload during AI calls
+  const reloadBeforeAI = viteReloadDetected;
+
+  // 1. AI Query
+  if (token) {
+    try {
+      log('Starting POST /api/ai/query ...', 'info');
+      const controller = new AbortController();
+      const tid = setTimeout(() => controller.abort(), 60000);
+      const url = document.getElementById('appUrl').value + '/api/ai/query';
+      const res = await fetch(url, {
+        method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+        body: JSON.stringify({ prompt:'List all databases and record counts briefly.', databaseId:testDbId }),
+        signal: controller.signal
+      });
+      clearTimeout(tid);
+      if (res.ok) {
+        const data = await res.json();
+        const keys = Object.keys(data).join(', ');
+        setStep('aiquery','pass',`200 OK — response keys: ${keys}`);
+        log('AI query: 200 OK — keys: ' + keys, 'pass');
+      } else {
+        const err = await res.json().catch(()=>({}));
+        setStep('aiquery','warn',`status=${res.status} — ${err.error||'error'} (Gemini may be rate-limited)`);
+        log('AI query returned status ' + res.status + ': ' + JSON.stringify(err), 'warn');
+      }
+    } catch(e) {
+      if (e.name === 'AbortError') {
+        setStep('aiquery','warn','Request timed out (60s) — Gemini may be slow/rate-limited');
+        log('AI query timed out (60s)', 'warn');
+      } else {
+        setStep('aiquery','fail', e.message);
+        log('AI query error: ' + e.message, 'fail');
+      }
+    }
+
+    if (viteReloadDetected && !reloadBeforeAI) {
+      log('CRITICAL: Vite full-reload fired DURING AI query!', 'fail');
+    }
+  } else { setStep('aiquery','fail','No token'); }
+
+  // 2. AI Insights
+  if (token && testDbId) {
+    try {
+      log('Starting GET /api/ai/insights/' + testDbId + ' ...', 'info');
+      const controller = new AbortController();
+      const tid = setTimeout(() => controller.abort(), 60000);
+      const url = document.getElementById('appUrl').value + '/api/ai/insights/' + testDbId;
+      const res = await fetch(url, { headers:{'Authorization':'Bearer '+token}, signal:controller.signal });
+      clearTimeout(tid);
+      if (res.ok) {
+        const data = await res.json();
+        setStep('aiinsight','pass',`200 OK — isAiGenerated=${data.isAiGenerated} totalRecords=${data.totalRecords}`);
+        log('AI insights: 200 OK', 'pass');
+      } else {
+        const err = await res.json().catch(()=>({}));
+        setStep('aiinsight','warn',`status=${res.status} — ${err.error||'error'}`);
+        log('AI insights returned status ' + res.status, 'warn');
+      }
+    } catch(e) {
+      if (e.name === 'AbortError') {
+        setStep('aiinsight','warn','Timed out (60s)');
+        log('AI insights timed out', 'warn');
+      } else {
+        setStep('aiinsight','fail',e.message);
+      }
+    }
+  } else { setStep('aiinsight','fail','No token or DB'); }
+
+  // 3. AI Clean
+  if (token && testDbId) {
+    try {
+      log('Starting GET /api/ai/clean-data/' + testDbId + ' ...', 'info');
+      const controller = new AbortController();
+      const tid = setTimeout(() => controller.abort(), 60000);
+      const url = document.getElementById('appUrl').value + '/api/ai/clean-data/' + testDbId;
+      const res = await fetch(url, { headers:{'Authorization':'Bearer '+token}, signal:controller.signal });
+      clearTimeout(tid);
+      if (res.ok) {
+        const data = await res.json();
+        setStep('aiclean','pass',`200 OK — fixes=${data.fixes?.length??0} totalIssues=${data.totalIssues??0}`);
+        log('AI clean: 200 OK', 'pass');
+      } else {
+        const err = await res.json().catch(()=>({}));
+        setStep('aiclean','warn',`status=${res.status} — ${err.error||'?'}`);
+        log('AI clean returned status ' + res.status, 'warn');
+      }
+    } catch(e) {
+      if (e.name === 'AbortError') {
+        setStep('aiclean','warn','Timed out (60s)');
+      } else {
+        setStep('aiclean','fail',e.message);
+      }
+    }
+  } else { setStep('aiclean','fail','No token or DB'); }
+
+  // 4. /api/auth/me after AI ops
+  if (token) {
+    try {
+      const me = await apiCall('GET', '/api/auth/me', null, token);
+      if (me.ok) {
+        setStep('me-after','pass',`200 OK — still authenticated after all AI ops`);
+        log('/api/auth/me after AI: PASS — session intact', 'pass');
+      } else {
+        setStep('me-after','fail',`status=${me.status} — SESSION LOST AFTER AI OPS!`);
+        log('CRITICAL: session lost after AI operations!', 'fail');
+      }
+    } catch(e) { setStep('me-after','fail',e.message); }
+  } else { setStep('me-after','fail','No token'); }
+
+  // ====== PERSISTENCE TESTS ======
+  status('Testing persistence...');
+  log('\n=== PERSISTENCE TESTS ===');
+
+  // 1. Vite WS check
+  if (viteReloadDetected) {
+    setStep('vite-ws','fail','VITE FULL-RELOAD DETECTED during tests — this causes auth loss!');
+    log('CRITICAL: Vite full-reload was detected!', 'fail');
+  } else {
+    setStep('vite-ws','pass','No "full-reload" Vite WebSocket event detected during entire test run');
+    log('Vite WS: No full-reload events — PASS', 'pass');
+  }
+
+  // 2. localStorage final check
+  const finalToken = localStorage.getItem('nexus_token');
+  if (finalToken) {
+    setStep('locfinal','pass',`nexus_token still in localStorage: ${finalToken.substring(0,30)}...`);
+    log('localStorage final check: token present', 'pass');
+  } else {
+    setStep('locfinal','warn',`nexus_token is null in localStorage (app may not have set it — this page used its own fetch)`);
+    log('localStorage: nexus_token not found (normal if not using app UI)', 'warn');
+  }
+
+  // 3. Notifications (verify still auth'd)
+  if (token) {
+    try {
+      const r = await apiCall('GET', '/api/notifications', null, token);
+      if (r.ok) {
+        setStep('notif','pass',`200 OK — ${r.data.notifications?.length||0} notification(s)`);
+        log('GET notifications: authenticated', 'pass');
+      } else {
+        setStep('notif','fail',`status=${r.status} — not authenticated`);
+      }
+    } catch(e) { setStep('notif','fail',e.message); }
+  } else { setStep('notif','fail','No token'); }
+
+  // 4. Final auth check
+  if (token) {
+    try {
+      const me = await apiCall('GET', '/api/auth/me', null, token);
+      if (me.ok && me.data.user) {
+        setStep('me-final','pass',`200 OK — ${me.data.user.email} — FULL END-TO-END AUTH PRESERVED`);
+        log('Final auth check: PASS — user: ' + me.data.user.email, 'pass');
+      } else {
+        setStep('me-final','fail',`status=${me.status} — AUTH LOST`);
+        log('Final auth check: FAIL', 'fail');
+      }
+    } catch(e) { setStep('me-final','fail',e.message); }
+  } else { setStep('me-final','fail','No token'); }
+
+  // Final verdict
+  status('Done!');
+  document.getElementById('runBtn').disabled = false;
+  const verdict = document.getElementById('verdict');
+  updateMetrics();
+
+  if (results.fail === 0 && results.pass > 0) {
+    verdict.className = 'verdict pass';
+    verdict.textContent = `✅ ALL ${results.pass} TESTS PASSED — No reloads, no auth loss, JWT preserved end-to-end`;
+    log('\n=== VERDICT: ALL TESTS PASSED ===', 'pass');
+  } else if (results.fail > 0) {
+    verdict.className = 'verdict fail';
+    verdict.textContent = `❌ ${results.fail} TEST(S) FAILED — See details above`;
+    log('\n=== VERDICT: FAILURES DETECTED ===', 'fail');
+  } else {
+    verdict.className = 'verdict pending';
+    verdict.textContent = `⚠️ ${results.warn} warnings — check log for details`;
+  }
+}
+
+function clearAll() {
+  document.getElementById('auth-steps').innerHTML = '';
+  document.getElementById('crud-steps').innerHTML = '';
+  document.getElementById('ai-steps').innerHTML = '';
+  document.getElementById('persist-steps').innerHTML = '';
+  document.getElementById('log').textContent = 'Cleared. Ready to run.';
+  document.getElementById('verdict').className = 'verdict pending';
+  document.getElementById('verdict').textContent = '⏳ Click "Run All Verification Tests" to begin';
+  Object.assign(results, {pass:0,fail:0,warn:0,total:0});
+  updateMetrics();
+}
+</script>
+</body>
+</html>

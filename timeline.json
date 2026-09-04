@@ -1,0 +1,198 @@
+[
+  {
+    "timestamp": "2026-09-04T13:18:38.587Z",
+    "elapsedMs": 21384,
+    "stage": "Phase 1 - User Registered -- JWT active in localStorage",
+    "type": "PASS",
+    "detail": "eyJhbGciOiJIUzI1NiIsInR5cCI6Ik..."
+  },
+  {
+    "timestamp": "2026-09-04T13:18:38.588Z",
+    "elapsedMs": 21385,
+    "stage": "Phase 1 - User Registration & Auto Login",
+    "type": "PASS",
+    "detail": "User stress-1788527910848@nexus.local"
+  },
+  {
+    "timestamp": "2026-09-04T13:18:38.804Z",
+    "elapsedMs": 21601,
+    "stage": "Phase 1 - /api/auth/me Verification",
+    "type": "PASS",
+    "detail": "Authenticated as stress-1788527910848@nexus.local"
+  },
+  {
+    "timestamp": "2026-09-04T13:18:42.611Z",
+    "elapsedMs": 25408,
+    "stage": "Phase 1 - Hard Refresh -- JWT active in localStorage",
+    "type": "PASS",
+    "detail": "eyJhbGciOiJIUzI1NiIsInR5cCI6Ik..."
+  },
+  {
+    "timestamp": "2026-09-04T13:18:42.611Z",
+    "elapsedMs": 25408,
+    "stage": "Phase 1 - F5 Hard Refresh Session Restored",
+    "type": "PASS",
+    "detail": "JWT intact, Dashboard rendered"
+  },
+  {
+    "timestamp": "2026-09-04T13:19:18.922Z",
+    "elapsedMs": 61719,
+    "stage": "Phase 1 - Re-login after Reopen -- JWT active in localStorage",
+    "type": "PASS",
+    "detail": "eyJhbGciOiJIUzI1NiIsInR5cCI6Ik..."
+  },
+  {
+    "timestamp": "2026-09-04T13:19:18.922Z",
+    "elapsedMs": 61719,
+    "stage": "Phase 1 - Browser Reopen & Re-authentication Complete",
+    "type": "PASS",
+    "detail": "Session persistent"
+  },
+  {
+    "timestamp": "2026-09-04T13:19:21.353Z",
+    "elapsedMs": 64150,
+    "stage": "Phase 1 - User Logout Verification",
+    "type": "PASS",
+    "detail": "Token removed from localStorage, returned to landing state"
+  },
+  {
+    "timestamp": "2026-09-04T13:19:22.040Z",
+    "elapsedMs": 64837,
+    "stage": "Phase 1 - Invalid Token Graceful Handling",
+    "type": "PASS",
+    "detail": "Rejected with 401/403 without crash"
+  },
+  {
+    "timestamp": "2026-09-04T13:19:22.086Z",
+    "elapsedMs": 64883,
+    "stage": "Phase 1 - Expired Token Graceful Handling",
+    "type": "PASS",
+    "detail": "Rejected with 401/403 without crash"
+  },
+  {
+    "timestamp": "2026-09-04T13:19:34.211Z",
+    "elapsedMs": 77008,
+    "stage": "Phase 1 - Re-authenticated Valid Session -- JWT active in localStorage",
+    "type": "PASS",
+    "detail": "eyJhbGciOiJIUzI1NiIsInR5cCI6Ik..."
+  },
+  {
+    "timestamp": "2026-09-04T13:19:34.211Z",
+    "elapsedMs": 77008,
+    "stage": "Phase 1 - Complete Authentication Cycle Passed",
+    "type": "PASS",
+    "detail": "Register, Login, F5, Reopen, Logout, Invalid/Expired tokens, and Re-login validated"
+  },
+  {
+    "timestamp": "2026-09-04T13:19:37.834Z",
+    "elapsedMs": 80631,
+    "stage": "Phase 2 - Database Stress Completed",
+    "type": "PASS",
+    "detail": "105 operations executed with 0 failures"
+  },
+  {
+    "timestamp": "2026-09-04T13:19:55.912Z",
+    "elapsedMs": 98709,
+    "stage": "Phase 3 - Record Archive & Restore Verified",
+    "type": "PASS",
+    "detail": "Records successfully archived and restored"
+  },
+  {
+    "timestamp": "2026-09-04T13:19:56.569Z",
+    "elapsedMs": 99366,
+    "stage": "Phase 3 - Record Stress Completed",
+    "type": "PASS",
+    "detail": "150+ created, 30 edited, 10 duplicated, search/sort/paginated, archived/restored, 20 deleted"
+  },
+  {
+    "timestamp": "2026-09-04T13:21:52.422Z",
+    "elapsedMs": 215219,
+    "stage": "Phase 4 - AI Stress Completed",
+    "type": "PASS",
+    "detail": "Chat, Insights, Cleaning, Report, Creator, Large Prompt & Parallel Queries Passed"
+  },
+  {
+    "timestamp": "2026-09-04T13:21:55.572Z",
+    "elapsedMs": 218369,
+    "stage": "Phase 5 - Navigation Stress Completed",
+    "type": "PASS",
+    "detail": "500 rapid view transitions with 0 unexpected reloads"
+  },
+  {
+    "timestamp": "2026-09-04T13:21:56.531Z",
+    "elapsedMs": 219328,
+    "stage": "Phase 6 - Soft Refresh -- JWT active in localStorage",
+    "type": "PASS",
+    "detail": "eyJhbGciOiJIUzI1NiIsInR5cCI6Ik..."
+  },
+  {
+    "timestamp": "2026-09-04T13:21:56.531Z",
+    "elapsedMs": 219328,
+    "stage": "Phase 6 - Soft Refresh Restored Session",
+    "type": "PASS",
+    "detail": ""
+  },
+  {
+    "timestamp": "2026-09-04T13:22:00.073Z",
+    "elapsedMs": 222870,
+    "stage": "Phase 6 - Hard Refresh F5 -- JWT active in localStorage",
+    "type": "PASS",
+    "detail": "eyJhbGciOiJIUzI1NiIsInR5cCI6Ik..."
+  },
+  {
+    "timestamp": "2026-09-04T13:22:00.073Z",
+    "elapsedMs": 222870,
+    "stage": "Phase 6 - Hard Refresh (F5) Restored Session",
+    "type": "PASS",
+    "detail": "Zero login redirect, Dashboard rendered"
+  },
+  {
+    "timestamp": "2026-09-04T13:22:02.331Z",
+    "elapsedMs": 225128,
+    "stage": "Phase 6 - Ctrl+R -- JWT active in localStorage",
+    "type": "PASS",
+    "detail": "eyJhbGciOiJIUzI1NiIsInR5cCI6Ik..."
+  },
+  {
+    "timestamp": "2026-09-04T13:22:02.331Z",
+    "elapsedMs": 225128,
+    "stage": "Phase 6 - Ctrl+R Restored Session",
+    "type": "PASS",
+    "detail": "Session intact"
+  },
+  {
+    "timestamp": "2026-09-04T13:22:02.576Z",
+    "elapsedMs": 225373,
+    "stage": "Zero Unexpected Page Reloads",
+    "type": "PASS",
+    "detail": "Verified 0 page reloads"
+  },
+  {
+    "timestamp": "2026-09-04T13:22:02.576Z",
+    "elapsedMs": 225373,
+    "stage": "Zero Vite Full-Reload Events",
+    "type": "PASS",
+    "detail": "Verified 0 Vite reloads"
+  },
+  {
+    "timestamp": "2026-09-04T13:22:02.576Z",
+    "elapsedMs": 225373,
+    "stage": "Zero 401 Unauthorized Responses",
+    "type": "PASS",
+    "detail": "Verified 0 auth failures"
+  },
+  {
+    "timestamp": "2026-09-04T13:22:02.576Z",
+    "elapsedMs": 225373,
+    "stage": "Zero React Runtime Errors",
+    "type": "PASS",
+    "detail": "No React crash or unhandled error"
+  },
+  {
+    "timestamp": "2026-09-04T13:22:02.576Z",
+    "elapsedMs": 225373,
+    "stage": "Minimal Duplicate API Calls",
+    "type": "PASS",
+    "detail": "Detected: 113"
+  }
+]
