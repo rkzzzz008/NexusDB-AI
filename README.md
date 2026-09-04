@@ -1,20 +1,51 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# NexusDB AI 🚀
 
-# Run and deploy your AI Studio app
+An AI-powered database management platform built with React, TypeScript, Node.js, and Google Gemini AI.
 
-This contains everything you need to run your app locally.
+## Features
 
-View your app in AI Studio: https://ai.studio/apps/44fd6990-97d6-4fd9-9ada-5fd307d5d4bc
+- 🔐 User Authentication
+- 🗄️ Dynamic Database Creation
+- ✏️ CRUD Operations
+- 🤖 AI Chat Assistant
+- 📊 AI Insights
+- 🧹 AI Data Cleaning
+- 📄 AI Report Generation
+- 🏗️ AI Database Creator
+- 👥 Database Sharing
+- 🛡️ Admin Dashboard
 
-## Run Locally
+## Tech Stack
 
-**Prerequisites:**  Node.js
+- React
+- TypeScript
+- Vite
+- Node.js
+- Express
+- MongoDB
+- Google Gemini AI
 
+## Installation
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+```bash
+npm install
+npm run dev
+```
+
+## Environment Variables
+
+Create a `.env.local` file:
+
+```env
+GEMINI_API_KEY=your_api_key
+MONGODB_URI=your_mongodb_uri
+JWT_SECRET=your_secret
+```
+
+## Screenshots
+
+(Add screenshots here later.)
+
+## Author
+
+Rahulkrishnan G
