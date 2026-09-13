@@ -49,13 +49,13 @@ The main dashboard provides an overview of databases, records, users, storage, a
 
 Create a database by defining its name, category, description, and custom schema fields.
 
-![Custom Database Creation](screenshots/04-custome%20database.png)
+![Custom Database Creation](screenshots/04-customdatabase.png)
 
 ### 5. Database Management
 
 Manage database records, schemas, and database-specific operations through a dedicated workspace.
 
-![Database Management](screenshots/05-%20database.png)
+![Database Management](screenshots/05-database.png)
 
 ### 6. AI Assistant
 
