@@ -42,10 +42,6 @@ MONGODB_URI=your_mongodb_uri
 JWT_SECRET=your_secret
 ```
 
-## Screenshots
-
-(Add screenshots here later.)
-
 ## Author
 
 Rahulkrishnan G
